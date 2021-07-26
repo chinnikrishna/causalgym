@@ -44,6 +44,7 @@ class Task1Env(gym.Env):
             self.screen = pygame.display.set_mode((self.DISPX, self.DISPY))
         else:
             self.screen = pygame.Surface((self.DISPX, self.DISPY))
+            self.render_scr = pygame.display.set_mode((self.DISPX, self.DISPY))
         # Instance a clock
         self.clock = pygame.time.Clock()
         # Set white as background
@@ -111,8 +112,7 @@ class Task1Env(gym.Env):
         sys.exit(0)
 
     def render(self, mode='human', close=False):
-        scr = pygame.display.set_mode((self.DISPX, self.DISPY))
-        scr.blit(self.screen, (0,0))
+        self.render_scr.blit(self.screen, (0,0))
         pygame.display.update()
 
     def play(self):
