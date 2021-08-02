@@ -35,6 +35,9 @@ class Task1Env(gym.Env):
         self.action_space = spaces.Discrete(_NUM_ACTIONS)
         self.observation_space = spaces.Box(low=0, high=max(self.DISPX, self.DISPY),
                                             shape=(self.DISPX, self.DISPY), dtype=np.uint8)
+        # Reward Structure
+        self.NEG_REWARD = -1.0
+        self.POS_REWARD = 10000.0
         # Setup Task
         self.setup_task()
 
@@ -78,12 +81,12 @@ class Task1Env(gym.Env):
         obs_img = array3d(self.screen)
         obs_img = np.transpose(obs_img, (1, 0, 2))
         done = False
-        reward = 0
-        return obs_img, done, reward
+        reward = self.NEG_REWARD
+        return obs_img, reward, done
 
     def step(self, action):
         done = False
-        reward = 0
+        reward = self.NEG_REWARD
         # Set white as background
         self.screen.fill((255, 255, 255))
         # Update State based on action
@@ -97,7 +100,7 @@ class Task1Env(gym.Env):
             door_retval = door.update(self.bot, self.KEY_MAP[action])
             if door_retval is not None:
                 done = True
-                reward = door_retval
+                reward = self.POS_REWARD
                 break
         # Draw Sprites
         self._draw_sprites()
@@ -106,7 +109,7 @@ class Task1Env(gym.Env):
         obs_img = np.transpose(obs_img, (1, 0, 2))
         # Tick clock
         self.clock.tick(self.FPS)
-        return obs_img, done, reward
+        return obs_img, reward, done
 
     def close(self):
         sys.exit(0)
